@@ -14,6 +14,7 @@ import aulaRoutes from './routes/aula.routes.js';
 import notificacionRoutes from './routes/notificaciones.routes.js';
 import calendarioRoutes from './routes/calendario.routes.js';
 import flashcardsRoutes from './routes/flashcards.routes.js';
+import gamificacionRoutes from './routes/gamificacion.routes.js';
 
 const app= express();
 app.use(express.json());
@@ -44,6 +45,7 @@ app.use('/api', aulaRoutes);
 app.use('/api', notificacionRoutes);
 app.use('/api', calendarioRoutes);
 app.use('/api', flashcardsRoutes);
+app.use('/api', gamificacionRoutes);
 
 app.use((req,resp,next) => {
     resp.status(404).json({

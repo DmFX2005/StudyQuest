@@ -7,7 +7,7 @@ const router = Router();
 
 router.get('/me',requireAuth, getMe);
 
-router.put('/postperfil',requireAuth, updateMyPerfil);
+router.put('/putperfil',requireAuth, updateMyPerfil);
 
 router.get('/getbuscarestudiantes', requireAuth, buscarEstudiantes);
 
