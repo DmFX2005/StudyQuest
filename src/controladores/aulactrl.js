@@ -4,10 +4,6 @@ function getRoles(req) {
   return Array.isArray(req.user?.roles) ? req.user.roles : [];
 }
 
-/**
- * GET /api/aulas
- * Lista aulas donde el profesor logueado es el dueño
- */
 export async function listarAulasProfesor(req, res) {
   try {
     const userId = req.user.sub;
@@ -35,11 +31,6 @@ export async function listarAulasProfesor(req, res) {
   }
 }
 
-/**
- * POST /api/aulas
- * Crea un aula para el profesor logueado
- * Body: { nombre }
- */
 export async function crearAula(req, res) {
   try {
     const userId = req.user.sub;
@@ -71,10 +62,45 @@ export async function crearAula(req, res) {
   }
 }
 
-/**
- * GET /api/aulas/:id/estudiantes
- * Lista estudiantes de un aula (solo el profesor dueño)
- */
+export async function actualizarAula(req, res) {
+  try {
+    const userId = req.user.sub;
+    const roles = Array.isArray(req.user?.roles) ? req.user.roles : [];
+    const { id } = req.params;
+    const { nombre } = req.body;
+
+    if (!roles.includes('PROFESOR')) {
+      return res.status(403).json({ message: 'Solo PROFESOR puede actualizar aulas' });
+    }
+
+    if (!nombre || !nombre.trim()) {
+      return res.status(400).json({ message: 'nombre es requerido' });
+    }
+
+    const result = await pool.query(
+      `UPDATE aula
+          SET nombre = $3
+        WHERE aula_id = $1
+          AND profesor_id = $2
+       RETURNING aula_id, profesor_id, nombre, creado_en`,
+      [id, userId, nombre.trim()]
+    );
+
+    if (!result.rowCount) {
+      return res.status(404).json({ message: 'Aula no encontrada o no pertenece al profesor' });
+    }
+
+    return res.json({
+      message: 'Aula actualizada correctamente',
+      data: result.rows[0]
+    });
+  } catch (e) {
+    console.error('actualizarAula error:', e.message);
+    return res.status(500).json({ message: 'error en el servidor' });
+  }
+}
+
+
 export async function listarEstudiantesDeAula(req, res) {
   try {
     const userId = req.user.sub;
@@ -123,11 +149,6 @@ export async function listarEstudiantesDeAula(req, res) {
   }
 }
 
-/**
- * POST /api/aulas/:id/estudiantes
- * Agregar estudiante a un aula
- * Body: { estudiante_id }
- */
 export async function agregarEstudianteAula(req, res) {
   try {
     const userId = req.user.sub;
@@ -152,7 +173,6 @@ export async function agregarEstudianteAula(req, res) {
       return res.status(404).json({ message: 'Aula no encontrada o no pertenece al profesor' });
     }
 
-    // Opcional: validar que el usuario tenga rol ESTUDIANTE
     const estRes = await pool.query(
       `SELECT 1
          FROM usuario_rol ur
@@ -179,10 +199,6 @@ export async function agregarEstudianteAula(req, res) {
   }
 }
 
-/**
- * DELETE /api/aulas/:id/estudiantes/:estudianteId
- * Quitar estudiante de un aula
- */
 export async function eliminarEstudianteDeAula(req, res) {
   try {
     const userId = req.user.sub;
@@ -214,10 +230,6 @@ export async function eliminarEstudianteDeAula(req, res) {
   }
 }
 
-/**
- * GET /api/aulas/mias
- * Estudiante ve las aulas en las que está
- */
 export async function listarAulasEstudiante(req, res) {
   try {
     const estudianteId = req.user.sub;
@@ -248,3 +260,36 @@ export async function listarAulasEstudiante(req, res) {
     return res.status(500).json({ message: 'error en el servidor' });
   }
 }
+
+export async function eliminarAula(req, res) {
+  try {
+    const userId = req.user.sub;
+    const roles = Array.isArray(req.user?.roles) ? req.user.roles : [];
+    const { id } = req.params; // aula_id
+
+    if (!roles.includes('PROFESOR')) {
+      return res.status(403).json({ message: 'Solo PROFESOR puede eliminar aulas' });
+    }
+
+    const result = await pool.query(
+      `DELETE FROM aula
+        WHERE aula_id = $1
+          AND profesor_id = $2`,
+      [id, userId]
+    );
+
+    if (!result.rowCount) {
+      return res
+        .status(404)
+        .json({ message: 'Aula no encontrada o no pertenece al profesor' });
+    }
+
+    // gracias a ON DELETE CASCADE se borran también los registros de aula_estudiante
+    return res.json({ message: 'Aula eliminada correctamente' });
+  } catch (e) {
+    console.error('eliminarAula error:', e.message);
+    return res.status(500).json({ message: 'error en el servidor' });
+  }
+}
+
+

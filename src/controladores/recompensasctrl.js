@@ -132,11 +132,6 @@ export async function crearRecompensa(req, res) {
   }
 }
 
-/* =========================
-   PADRE: actualizar recompensa OFRECIDA
-   PUT /api/recompensas/:id
-   Solo permite editar si estado_recompensa = 'OFRECIDA'
-   ========================= */
 export async function actualizarRecompensa(req, res) {
   try {
     const padreId = req.user.sub;
@@ -200,10 +195,6 @@ export async function actualizarRecompensa(req, res) {
   }
 }
 
-/* =========================
-   PADRE: revocar recompensa
-   POST /api/recompensas/:id/revocar
-   ========================= */
 export async function revocarRecompensa(req, res) {
   try {
     const padreId = req.user.sub;
@@ -238,12 +229,6 @@ export async function revocarRecompensa(req, res) {
   }
 }
 
-/* =========================
-   PADRE: confirmar recompensa GANADA
-   POST /api/recompensas/:id/confirmar
-   - Cambia estado_recompensa a GANADA
-   - Si tipo_recompensa = XP o PUNTOS, inserta evento_gamificacion
-   ========================= */
 export async function confirmarRecompensaGanada(req, res) {
   try {
     const padreId = req.user.sub;
@@ -311,10 +296,6 @@ export async function confirmarRecompensaGanada(req, res) {
   }
 }
 
-/* =========================
-   ESTUDIANTE: ver mis recompensas
-   GET /api/recompensas/mias?estado=
-   ========================= */
 export async function listarRecompensasEstudiante(req, res) {
   try {
     const estudianteId = req.user.sub;

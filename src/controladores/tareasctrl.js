@@ -6,7 +6,9 @@ export async function getMisTareas(req, res) {
     const { estado } = req.query; 
 
     const params = [userId];
-    let where = 't.estudiante_id = $1 AND t.origen_tarea = \'AUTOGESTION\'';
+    // let where = 't.estudiante_id = $1 AND t.origen_tarea = \'AUTOGESTION\'';
+    let where = 't.estudiante_id = $1';
+
 
     if (estado) {
       params.push(estado);
@@ -107,7 +109,6 @@ export async function postTareaPersonalNueva(req, res) {
 }
 
 /**
- * Actualiza una tarea personal (solo si es del usuario)
  * Body: { titulo?, descripcion?, prioridad?, vence_en?, estado? }
  */
 export async function putTareaPersonal(req, res) {
@@ -254,6 +255,147 @@ export async function postTareaPersonalconGami(req, res) {
     });
   } catch (e) {
     console.error('completarTareaPersonal error:', e.message);
+    return res.status(500).json({ message: 'error en el servidor' });
+  }
+}
+
+// Lista tareas de los hijos del padre.
+export async function listarTareasHijos(req, res) {
+  try {
+    const padreId = req.user.sub;
+    const roles = req.user.roles || [];
+
+    if (!roles.includes('PADRE')) {
+      return res.status(403).json({ message: 'Solo PADRE puede ver tareas de hijos' });
+    }
+
+    const { hijo_id, estado, origen } = req.query;
+
+    const params = [padreId];
+    let where = `ph.padre_id = $1`;
+
+    if (hijo_id) {
+      params.push(hijo_id);
+      where += ` AND t.estudiante_id = $${params.length}`;
+    }
+
+    if (estado) {
+      params.push(estado);
+      where += ` AND t.estado = $${params.length}`;
+    }
+
+    if (origen) {
+      params.push(origen);
+      where += ` AND t.origen_tarea = $${params.length}`;
+    }
+
+    // se usa LEFT JOIN LATERAL para traer "la última entrega" de cada tarea, si existe
+    const result = await pool.query(
+      `SELECT 
+          t.tarea_id,
+          t.estudiante_id,
+          t.titulo,
+          t.descripcion,
+          t.origen_tarea,
+          t.estado,
+          t.prioridad,
+          t.vence_en,
+          t.creada_en,
+          p.nombre  AS estudiante_nombre,
+          p.apellido AS estudiante_apellido,
+          ult_entrega.entrega_id,
+          ult_entrega.entregado_por,
+          ult_entrega.entregada_en,
+          ult_entrega.notas
+       FROM padre_hijo ph
+       JOIN tarea t 
+         ON t.estudiante_id = ph.hijo_id
+       LEFT JOIN perfil p
+         ON p.usuario_id = t.estudiante_id
+       LEFT JOIN LATERAL (
+         SELECT et.entrega_id, et.entregado_por, et.entregada_en, et.notas
+           FROM entrega_tarea et
+          WHERE et.tarea_id = t.tarea_id
+          ORDER BY et.entregada_en DESC
+          LIMIT 1
+       ) AS ult_entrega ON TRUE
+      WHERE ${where}
+      ORDER BY t.vence_en NULLS LAST, t.creada_en DESC`,
+      params
+    );
+
+    return res.json({
+      cant: result.rowCount,
+      data: result.rows
+    });
+  } catch (e) {
+    console.error('listarTareasHijos error:', e.message);
+    return res.status(500).json({ message: 'error en el servidor' });
+  }
+}
+
+export async function entregarTareaHijoPorPadre(req, res) {
+  try {
+    const padreId = req.user.sub;
+    const roles = req.user.roles || [];
+    const { id } = req.params;
+    const { notas = null } = req.body || {};
+
+    if (!roles.includes('PADRE')) {
+      return res.status(403).json({ message: 'Solo PADRE puede usar este endpoint' });
+    }
+
+    const tareaRes = await pool.query(
+      `SELECT t.tarea_id, t.estudiante_id, t.estado
+         FROM tarea t
+         JOIN padre_hijo ph
+           ON ph.hijo_id = t.estudiante_id
+        WHERE t.tarea_id = $1
+          AND ph.padre_id = $2`,
+      [id, padreId]
+    );
+
+    if (!tareaRes.rowCount) {
+      return res.status(404).json({ message: 'Tarea no encontrada para este padre/hijo' });
+    }
+
+    const tarea = tareaRes.rows[0];
+
+    const yaEntrega = await pool.query(
+      `SELECT 1 
+         FROM entrega_tarea 
+        WHERE tarea_id = $1
+        LIMIT 1`,
+      [tarea.tarea_id]
+    );
+    if (yaEntrega.rowCount) {
+      return res.status(400).json({ message: 'Ya existe una entrega registrada para esta tarea' });
+    }
+
+    await pool.query(
+      `INSERT INTO entrega_tarea (
+         tarea_id,
+         entregado_por,
+         entregada_en,
+         notas
+       )
+       VALUES ($1, $2, NOW(), $3)`,
+      [tarea.tarea_id, padreId, notas]
+    );
+
+    if (tarea.estado === 'PENDIENTE' || tarea.estado === 'EN_PROGRESO') {
+      await pool.query(
+        `UPDATE tarea
+            SET estado = 'ENTREGADA',
+                actualizada_en = NOW()
+          WHERE tarea_id = $1`,
+        [tarea.tarea_id]
+      );
+    }
+
+    return res.json({ message: 'Tarea entregada en nombre del hijo' });
+  } catch (e) {
+    console.error('entregarTareaHijoPorPadre error:', e.message);
     return res.status(500).json({ message: 'error en el servidor' });
   }
 }
