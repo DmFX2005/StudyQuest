@@ -1,0 +1,116 @@
+:host {
+  --sq-card-front: #1a1a1a;
+  --sq-card-back: #262626;
+  --sq-text: #e7e7e7;
+  --sq-danger: #ff7675;
+}
+
+p{
+  margin: 9px 0;
+}
+
+.pre_resp{
+  font-weight: bold;
+  margin: 15px 0;
+}
+.mazo-wrapper {
+  height: 100%;
+  width: 100%;
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mazo-header {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--sq-text);
+  margin-bottom: 12px;
+}
+
+.nav-buttons ion-button {
+  color: var(--sq-text);
+}
+
+
+.flashcard-container {
+  flex: 1;                     
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;         
+  perspective: 1000px;
+}
+
+.flashcard {
+  width: 90%;
+  max-width: 380px;
+  min-height: 260px;             
+  position: relative;
+
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+  cursor: pointer;
+}
+
+.flashcard.flipped {
+  transform: rotateY(180deg);
+}
+
+.flashcard-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  backface-visibility: hidden;
+  border-radius: 20px;
+  padding: 20px;
+
+  color: var(--sq-text);
+  text-align: center;
+
+  font-size: 1.1rem;
+  line-height: 1.4em;
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.flashcard-face.front {
+  background: var(--sq-card-front);
+  border: 1px solid #333;
+}
+
+.flashcard-face.back {
+  background: var(--sq-card-back);
+  border: 1px solid #444;
+  transform: rotateY(180deg);
+}
+
+.acciones-tarjeta {
+  margin: 45px 0;
+
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.acciones-tarjeta ion-button {
+  --background: var(--sq-card-front);
+  --color: var(--sq-text);
+}
+
+.acciones-tarjeta ion-button[color="danger"] {
+  --background: var(--sq-danger);
+  --color: white;
+}

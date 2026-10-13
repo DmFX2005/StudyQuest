@@ -1,0 +1,103 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Tareas de mis hijos</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/inicio"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="tareas-hijos-contenedor">
+
+    <ion-card class="card-filtros">
+      <ion-card-header>
+        <ion-card-title>Filtros</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-segment [value]="filtroEstado" (ionChange)="cambioFiltroEstado($event)">
+          <ion-segment-button value="TODAS">
+            <ion-label>Todas</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="PENDIENTE">
+            <ion-label>Pendientes</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+        <ion-segment [value]="filtroEstado" (ionChange)="cambioFiltroEstado($event)">
+          <ion-segment-button value="EN_PROGRESO">
+            <ion-label class="estado">En progreso</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="ENTREGADA">
+            <ion-label class="estado">Entregadas</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="COMPLETADA">
+            <ion-label class="estado">Completadas</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-text color="medium" *ngIf="cargando">
+      <p>Cargando tareas...</p>
+    </ion-text>
+
+    <ion-text color="medium" *ngIf="!cargando && tareasPorHijo.length === 0">
+      <p>No se encontraron tareas para tus hijos con el filtro actual.</p>
+    </ion-text>
+
+    <!-- Listado agrupado por hijo -->
+    <ion-card *ngFor="let grupo of tareasPorHijo">
+      <ion-card-header>
+        <div class="cabecera-hijo">
+          <div class="avatar-hijo">
+            <ion-icon name="person-outline"></ion-icon>
+            <span class="avatar-iniciales">{{ inicialesHijo(grupo) }}</span>
+          </div>
+
+          <div class="info-hijo">
+            <ion-card-title>{{ grupo.nombreCompleto }}</ion-card-title>
+          </div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item lines="full" *ngFor="let t of grupo.tareas">
+          <ion-icon
+            [name]="iconoEstado(t.estado)"
+            slot="start"
+          ></ion-icon>
+
+          <ion-label>
+            <h2>{{ t.titulo }}</h2>
+            <p *ngIf="t.descripcion">{{ t.descripcion }}</p>
+            <p *ngIf="t.vence_en">
+              Vence: {{ t.vence_en | date:'shortDate' }}
+            </p>
+            <p>
+              Prioridad: {{ t.prioridad || 'MEDIA' }}
+            </p>
+            <p>
+              Creada por: {{ t.origen_tarea}}
+            </p>
+          </ion-label>
+
+          <div class="col-acciones">
+            <ion-chip [color]="colorEstado(t.estado)">
+              <ion-icon [name]="iconoEstado(t.estado)"></ion-icon>
+              <ion-label>{{ t.estado }}</ion-label>
+            </ion-chip>
+
+            <ion-button *ngIf="t.estado === 'EN_PROGRESO' || t.estado === 'PENDIENTE'"
+              size="small"
+              color="primary"
+              shape="round"
+              (click)="marcarEntregada(t)"
+            >
+              Entregar
+            </ion-button>
+          </div>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

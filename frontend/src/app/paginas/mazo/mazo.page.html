@@ -1,0 +1,99 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Mazo</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/flashcards"></ion-back-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="fun_addTarjeta()">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="mazo-wrapper">
+    <div class="mazo-header" *ngIf="!cargando">
+      <ion-text color="medium" *ngIf="totalTarjetas > 0">
+        <p>Carta {{ currentIndex + 1 }} de {{ totalTarjetas }}</p>
+      </ion-text>
+      <ion-text color="medium" *ngIf="totalTarjetas === 0">
+        <p>No hay tarjetas en este mazo. Crea una con el botón +</p>
+      </ion-text>
+
+      <div class="nav-buttons" *ngIf="totalTarjetas > 0">
+        <ion-button
+          fill="clear"
+          (click)="prevCard()"
+          [disabled]="currentIndex === 0"
+        >
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-button>
+
+        <ion-button
+          fill="clear"
+          (click)="nextCard()"
+          [disabled]="currentIndex === totalTarjetas - 1"
+        >
+          <ion-icon name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
+    <div class="cargando" *ngIf="cargando">
+      <ion-spinner></ion-spinner>
+      <ion-text color="medium">
+        <p>Cargando tarjetas...</p>
+      </ion-text>
+    </div>
+
+    <div
+      class="flashcard-container"
+      *ngIf="!cargando && tarjetaActual"
+      (click)="flipCard()"
+    >
+      <div class="flashcard" [class.flipped]="isFlipped">
+        <div class="flashcard-face front">
+          <i><h3>Pregunta</h3> </i>
+          <p class="pre_resp">{{ tarjetaActual.frente }}</p>
+          <ion-text color="medium" *ngIf="tarjetaActual.pista">
+            <p style="font-size: 12px;">Pista: {{ tarjetaActual.pista }}</p>
+          </ion-text>
+          <ion-text color="medium">
+            <p style="font-size: 10px;">Toca la carta para ver la respuesta</p>
+          </ion-text>
+        </div>
+        <div class="flashcard-face back">
+          <h3>Respuesta</h3>
+          <p class="pre_resp">{{ tarjetaActual.reverso }}</p>
+          
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="acciones-tarjeta"
+      *ngIf="!cargando && tarjetaActual"
+    >
+      <ion-button
+        color="medium"
+        size="small"
+        (click)="fun_editarTarjetaActual()"
+      >
+        <ion-icon name="create-outline" slot="start"></ion-icon>
+        Editar
+      </ion-button>
+
+      <ion-button
+        color="danger"
+        size="small"
+        (click)="fun_eliminarTarjetaActual()"
+      >
+        <ion-icon name="trash-outline" slot="start"></ion-icon>
+        Eliminar
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

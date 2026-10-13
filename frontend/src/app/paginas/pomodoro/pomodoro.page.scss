@@ -1,0 +1,87 @@
+.pomodoro-contenedor {
+  padding: 16px;
+}
+
+.card-principal {
+  margin-bottom: 16px;
+}
+
+.botones-rapidos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.xp-estimado {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+
+  ion-icon {
+    font-size: 1.2rem;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.boton-grande {
+  margin-top: 12px;
+}
+
+.contador {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8px;
+
+  ion-icon {
+    font-size: 2rem;
+    margin-bottom: 4px;
+  }
+
+  h1 {
+    font-size: 2.4rem;
+    margin: 0;
+  }
+}
+
+.barra-progreso {
+  margin: 12px 0;
+}
+
+.barra-fondo {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.barra-relleno {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: #4caf50;
+  transition: width 0.3s linear;
+}
+
+.acciones-temporizador {
+  margin-top: 8px;
+}
+
+.finalizado {
+  text-align: center;
+
+  h2 {
+    margin-bottom: 4px;
+  }
+}
+
+.card-resumen,
+.card-historial {
+  margin-bottom: 12px;
+}

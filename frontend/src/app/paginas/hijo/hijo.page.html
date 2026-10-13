@@ -1,0 +1,45 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
+    <ion-title>{{ titulo }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen class="hijo-contenido">
+  <div class="hijo-wrapper">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">Vincular hijo</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-text color="medium">
+          <p>
+            Ingresa el correo electrónico del hijo que ya está registrado en StudyQuest.
+          </p>
+        </ion-text>
+
+        <form [formGroup]="hijoForm" (ngSubmit)="guardarVinculo()">
+          <ion-label><b>Correo del hijo:</b></ion-label>
+          <ion-item lines="none" [class.invalid]="esInvalido('emailHijo')">
+            <ion-input
+              formControlName="emailHijo"
+              type="email"
+              placeholder="correo@ejemplo.com"
+            ></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="esInvalido('emailHijo')">
+            {{ mensajeError('emailHijo') }}
+          </ion-text>
+
+          <ion-button expand="block" shape="round" type="submit">
+            Guardar vínculo
+          </ion-button>
+
+          <ion-button expand="block" color="medium" shape="round" type="button" (click)="cancelar()">
+            Cancelar
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

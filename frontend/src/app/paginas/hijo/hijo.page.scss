@@ -1,0 +1,8 @@
+.hijo-wrapper {
+  padding: 16px;
+}
+
+ion-item.invalid {
+  --border-color: var(--ion-color-danger);
+  --highlight-background: var(--ion-color-danger);
+}

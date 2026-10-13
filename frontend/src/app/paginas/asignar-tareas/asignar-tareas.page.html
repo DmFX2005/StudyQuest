@@ -1,0 +1,190 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Asignar tarea</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/inicio"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="asignar-tarea-contenedor">
+
+    <!-- SEGMENTO DE DESTINO -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>¿A quién quieres asignar?</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-segment [value]="modoDestino" (ionChange)="cambioModo($event)">
+          <ion-segment-button value="ESTUDIANTE">
+            <ion-label>Estudiante</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="AULA">
+            <ion-label>Aula completa</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- MODO ESTUDIANTE -->
+    <ion-card *ngIf="modoDestino === 'ESTUDIANTE'">
+      <ion-card-header>
+        <ion-card-title>1. Selecciona un estudiante</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="buscarForm" (ngSubmit)="buscarEstudiantes()">
+          <ion-label><b>Nombre o apellido:</b></ion-label>
+          <ion-item lines="none" [class.invalid]="esInvalidoBuscar('q')">
+            <ion-input
+              formControlName="q"
+              placeholder="Ej: Ana, Pérez"
+            ></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="esInvalidoBuscar('q')">
+            {{ mensajeErrorBuscar('q') }}
+          </ion-text>
+
+          <ion-button expand="block" shape="round" type="submit">
+            <ion-icon name="search-outline" slot="start"></ion-icon>
+            Buscar
+          </ion-button>
+        </form>
+
+        <ion-text color="medium" *ngIf="buscando">
+          <p>Buscando estudiantes...</p>
+        </ion-text>
+
+        <!-- Estudiante seleccionado -->
+        <div *ngIf="estudianteSeleccionado" class="seleccionado-box">
+          <ion-label color="medium">
+            <p><b>Estudiante seleccionado:</b></p>
+          </ion-label>
+          <ion-chip color="primary" outline="true">
+            <ion-icon name="person-outline"></ion-icon>
+            <ion-label>
+              {{ nombreCompleto(estudianteSeleccionado) }} - {{ estudianteSeleccionado.email }}
+            </ion-label>
+            <ion-icon name="close-outline" (click)="limpiarSeleccion()"></ion-icon>
+          </ion-chip>
+        </div>
+
+        <!-- Resultados de búsqueda -->
+        <ion-list *ngIf="!buscando && resultadosEstudiantes.length > 0">
+          <ion-item *ngFor="let e of resultadosEstudiantes">
+            <ion-label>
+              <h2>{{ nombreCompleto(e) }}</h2>
+              <p>{{ e.email }}</p>
+              <p *ngIf="e.grado_grupo">Grado/Grupo: {{ e.grado_grupo }}</p>
+            </ion-label>
+            <ion-button
+              size="small"
+              shape="round"
+              (click)="seleccionarEstudiante(e)"
+            >
+              Seleccionar
+            </ion-button>
+          </ion-item>
+        </ion-list>
+
+        <ion-text color="medium"
+          *ngIf="!buscando && resultadosEstudiantes.length === 0 && buscarForm.valid">
+          <p>No se encontraron estudiantes con ese criterio.</p>
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- MODO AULA -->
+    <ion-card *ngIf="modoDestino === 'AULA'">
+      <ion-card-header>
+        <ion-card-title>1. Selecciona un aula</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-text color="medium" *ngIf="cargandoAulas">
+          <p>Cargando tus aulas...</p>
+        </ion-text>
+
+        <ion-item lines="none" *ngIf="!cargandoAulas">
+          <ion-label><b>Aula:</b></ion-label>
+          <ion-select
+            placeholder="Selecciona un aula"
+            [(ngModel)]="aulaSeleccionadaId"
+            name="aulaSeleccionadaId"
+            interface="popover"
+          >
+            <ion-select-option *ngFor="let a of aulas" [value]="a.aula_id">
+              {{ a.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-text color="medium" *ngIf="!cargandoAulas && aulas.length === 0">
+          <p>No tienes aulas creadas. Crea primero un aula en "Mis aulas".</p>
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- FORMULARIO DE LA TAREA -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>2. Detalles de la tarea</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="tareaForm" (ngSubmit)="asignarTarea()">
+          <!-- Título -->
+          <ion-label><b>Título:</b></ion-label>
+          <ion-item lines="none" [class.invalid]="esInvalidoTarea('titulo')">
+            <ion-input
+              formControlName="titulo"
+              placeholder="Ej: Ejercicios de fracciones"
+            ></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="esInvalidoTarea('titulo')">
+            {{ mensajeErrorTarea('titulo') }}
+          </ion-text>
+
+          <!-- Descripción -->
+          <ion-label><b>Descripción (opcional):</b></ion-label>
+          <ion-item lines="none">
+            <ion-textarea
+              formControlName="descripcion"
+              placeholder="Instrucciones, recursos, etc."
+              auto-grow="true"
+            ></ion-textarea>
+          </ion-item>
+
+          <!-- Prioridad -->
+          <ion-label><b>Prioridad:</b></ion-label>
+          <ion-item lines="none" [class.invalid]="esInvalidoTarea('prioridad')">
+            <ion-select formControlName="prioridad" interface="popover">
+              <ion-select-option value="ALTA">Alta</ion-select-option>
+              <ion-select-option value="MEDIA">Media</ion-select-option>
+              <ion-select-option value="BAJA">Baja</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-text color="danger" *ngIf="esInvalidoTarea('prioridad')">
+            {{ mensajeErrorTarea('prioridad') }}
+          </ion-text>
+
+          <!-- Fecha de vencimiento -->
+          <ion-label><b>Fecha de entrega (opcional):</b></ion-label>
+          <ion-item lines="none">
+            <ion-input
+              formControlName="vence_en"
+              type="date"
+            ></ion-input>
+          </ion-item>
+
+          <ion-button expand="block" shape="round" type="submit">
+            <ion-icon name="send-outline" slot="start"></ion-icon>
+            {{ modoDestino === 'ESTUDIANTE' ? 'Asignar a estudiante' : 'Asignar a aula' }}
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+</ion-content>

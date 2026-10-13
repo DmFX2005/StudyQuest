@@ -1,0 +1,69 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Perfil</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/inicio"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="perfil-contenedor" *ngIf="usuario">
+    <ion-card>
+      <ion-card-header>
+        <div class="cabecera-perfil">
+          <ion-avatar class="avatar-perfil">
+            <div class="avatar-fondo">
+              <ion-icon name="person-circle-outline"></ion-icon>
+              <span class="avatar-iniciales">{{ iniciales }}</span>
+            </div>
+          </ion-avatar>
+
+          <div class="info-principal">
+            <ion-card-title>{{ nombreCompleto }}</ion-card-title>
+            <ion-text color="medium">
+              <p>{{ usuario.email }}</p>
+            </ion-text>
+
+            <div class="chips-rol" *ngIf="usuario.roles?.length">
+              <ion-chip *ngFor="let r of usuario.roles">
+                {{ r }}
+              </ion-chip>
+            </div>
+          </div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-label>
+            <p><strong>Nivel educativo:</strong> {{ usuario.perfil?.nivel_educativo || '-' }}</p>
+            <p><strong>Institución:</strong> {{ usuario.perfil?.institucion || '-' }}</p>
+            <p><strong>Grado/Grupo:</strong> {{ usuario.perfil?.grado_grupo || '-' }}</p>
+            <p><strong>Área docente:</strong> {{ usuario.perfil?.area_docente || '-' }}</p>
+            <p><strong>Teléfono:</strong> {{ usuario.perfil?.telefono_contacto || '-' }}</p>
+            <p><strong>Fecha de nacimiento:</strong>
+              {{ usuario.perfil?.fecha_nacimiento | date:'yyyy-MM-dd' }}
+            </p>
+          </ion-label>
+        </ion-item>
+
+        <div class="acciones-perfil">
+          <ion-button expand="block" shape="round" (click)="editarPerfil()">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            Editar datos
+          </ion-button>
+
+          <ion-button expand="block" color="danger" shape="round" (click)="cerrarSesion()">
+            <ion-icon name="log-out-outline" slot="start"></ion-icon>
+            Cerrar sesión
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <ion-text class="ion-padding" color="medium" *ngIf="cargando">
+    <p>Cargando datos de perfil...</p>
+  </ion-text>
+</ion-content>

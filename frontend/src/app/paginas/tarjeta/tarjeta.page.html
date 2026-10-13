@@ -1,0 +1,66 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
+    <ion-title>{{ id === 0 ? 'Nueva tarjeta' : 'Editar tarjeta' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen class="tarjeta-content">
+  <div class="tarjeta-wrapper">
+    <ion-card class="tarjeta-card">
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">{{ titulo }}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="tarjetaForm" (ngSubmit)="registrarTarjeta()">
+          <!-- Frente -->
+          <ion-label><b>Pregunta (frente):</b></ion-label>
+          <ion-item lines="none" [class.invalid]="isInvalid('frente')">
+            <ion-input
+              formControlName="frente"
+              placeholder="Texto de la pregunta"
+            ></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="isInvalid('frente')">
+            {{ getErrorMessage('frente') }}
+          </ion-text>
+
+          <!-- Reverso -->
+          <ion-label><b>Respuesta (reverso):</b></ion-label>
+          <ion-item lines="none" [class.invalid]="isInvalid('reverso')">
+            <ion-input
+              formControlName="reverso"
+              placeholder="Texto de la respuesta"
+            ></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="isInvalid('reverso')">
+            {{ getErrorMessage('reverso') }}
+          </ion-text>
+
+          <!-- Pista -->
+          <ion-label><b>Pista (opcional):</b></ion-label>
+          <ion-item lines="none">
+            <ion-input
+              formControlName="pista"
+              placeholder="Algo que te ayude a recordar"
+            ></ion-input>
+          </ion-item>
+
+          <ion-button expand="block" shape="round" type="submit">
+            {{ id === 0 ? 'Crear tarjeta' : 'Actualizar tarjeta' }}
+          </ion-button>
+
+          <ion-button
+            expand="block"
+            color="medium"
+            shape="round"
+            type="button"
+            (click)="fun_cancelar()"
+          >
+            Cancelar
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

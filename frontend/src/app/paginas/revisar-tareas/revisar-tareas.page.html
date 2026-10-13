@@ -1,0 +1,105 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Revisar tareas</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/inicio"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="refrescar()">
+        <ion-icon name="refresh-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-segment [value]="estadoFiltro" (ionChange)="cambioFiltro($event)">
+      <ion-segment-button value="ENTREGADA">
+        <ion-label>Entregadas</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="ACEPTADA">
+        <ion-label>Aceptadas</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="RECHAZADA">
+        <ion-label>Devueltas</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="revisar-tareas-contenedor">
+
+    <ion-text color="medium" *ngIf="cargando">
+      <p>Cargando tareas...</p>
+    </ion-text>
+
+    <ion-text color="medium" *ngIf="!cargando && tareas.length === 0">
+      <p>No hay tareas con estado {{ estadoFiltro.toLowerCase() }}.</p>
+    </ion-text>
+
+    <ion-card *ngFor="let t of tareas">
+      <ion-card-header>
+        <ion-card-title>{{ t.titulo }}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h2>{{ nombreCompleto(t) }}</h2>
+            <p>{{ t.estudiante_email }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item lines="none" *ngIf="t.descripcion">
+          <ion-icon name="document-text-outline" slot="start"></ion-icon>
+          <ion-label>
+            <p>{{ t.descripcion }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-label>
+            <p>
+              <b>Prioridad:</b> {{ t.prioridad }}<br>
+              <b>Estado:</b> {{ t.estado }}
+            </p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-icon name="time-outline" slot="start"></ion-icon>
+          <ion-label>
+            <p *ngIf="t.vence_en"><b>Vence:</b> {{ formatoFecha(t.vence_en) }}</p>
+            <p *ngIf="t.fecha_entrega"><b>Entregada:</b> {{ formatoFecha(t.fecha_entrega) }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item lines="none" *ngIf="t.texto_respuesta || t.archivo_url">
+          <ion-label>
+            <p *ngIf="t.texto_respuesta"><b>Respuesta:</b> {{ t.texto_respuesta }}</p>
+            <p *ngIf="t.archivo_url">
+              <b>Archivo:</b> {{ t.archivo_url }}
+            </p>
+          </ion-label>
+        </ion-item>
+
+        <div class="botones-acciones" *ngIf="t.estado === 'ENTREGADA'">
+          <ion-button expand="block" color="success" shape="round" (click)="aceptarTarea(t)">
+            <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+            Aceptar
+          </ion-button>
+
+          <ion-button expand="block" color="warning" shape="round" (click)="devolverTarea(t)">
+            <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+            Devolver para corregir
+          </ion-button>
+        </div>
+
+        <ion-text color="medium" *ngIf="t.estado !== 'ENTREGADA'">
+          <p>Esta tarea ya fue marcada como {{ t.estado.toLowerCase() }}.</p>
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

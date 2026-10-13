@@ -1,0 +1,62 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
+    <ion-title>{{ id === 0 ? 'Nuevo mazo' : 'Editar mazo' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen class="mazo-form-content">
+  <div class="mazo-form-wrapper">
+    <ion-card class="mazo-form-card">
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">{{ titulo }}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="mazoForm" (ngSubmit)="registrarMazo()">
+          <!-- Titulo -->
+          <ion-label><b>Título:</b></ion-label>
+          <ion-item lines="none" [class.invalid]="isInvalid('titulo')">
+            <ion-input
+              formControlName="titulo"
+              placeholder="Ej: Vocabulario de inglés"
+            ></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="isInvalid('titulo')">
+            {{ getErrorMessage('titulo') }}
+          </ion-text>
+
+          <!-- Alcance -->
+          <ion-label><b>Alcance:</b></ion-label>
+          <ion-item lines="none" [class.invalid]="isInvalid('alcance')">
+            <ion-select
+              formControlName="alcance"
+              interface="popover"
+              placeholder="Selecciona alcance"
+            >
+              <ion-select-option value="PERSONAL">Personal</ion-select-option>
+              <ion-select-option value="AULA">Aula</ion-select-option>
+              <ion-select-option value="ESTUDIANTE">Estudiante</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-text color="danger" *ngIf="isInvalid('alcance')">
+            {{ getErrorMessage('alcance') }}
+          </ion-text>
+
+          <ion-button expand="block" shape="round" type="submit">
+            {{ id === 0 ? 'Crear mazo' : 'Actualizar mazo' }}
+          </ion-button>
+
+          <ion-button
+            expand="block"
+            color="medium"
+            shape="round"
+            type="button"
+            (click)="fun_cancelar()"
+          >
+            Cancelar
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

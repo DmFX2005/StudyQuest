@@ -1,0 +1,136 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Modo concentración</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/inicio"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="pomodoro-contenedor">
+    <ion-card class="card-principal">
+      <ion-card-header>
+        <ion-card-title>Sesión de estudio</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ng-container *ngIf="estado === 'configuracion'">
+          <ion-text color="medium">
+            <p>Elige cuánto tiempo quieres concentrarte. Al completar la sesión ganarás XP!!</p>
+          </ion-text>
+
+          <div class="botones-rapidos">
+            <ion-button size="small" (click)="seleccionarMinutosRapido(10)">10 min</ion-button>
+            <ion-button size="small" (click)="seleccionarMinutosRapido(15)">15 min</ion-button>
+            <ion-button size="small" (click)="seleccionarMinutosRapido(25)">25 min</ion-button>
+            <ion-button size="small" (click)="seleccionarMinutosRapido(30)">30 min</ion-button>
+            <ion-button size="small" (click)="seleccionarMinutosRapido(45)">45 min</ion-button>
+            <ion-button size="small" (click)="seleccionarMinutosRapido(60)">60 min</ion-button>
+          </div>
+
+          <ion-item lines="none">
+            <ion-label>Minutos: {{ minutosSeleccionados }}</ion-label>
+          </ion-item>
+
+          <ion-range
+            min="10"
+            max="120"
+            step="5"
+            [value]="minutosSeleccionados"
+            (ionChange)="cambioRango($event)"
+          ></ion-range>
+
+          <div class="xp-estimado">
+            <ion-text>
+              <p>
+                XP estimado: <b>{{ xpEstimado }}</b>
+              </p>
+            </ion-text>
+          </div>
+
+          <div class="boton-grande">
+            <ion-button expand="block" shape="round" (click)="iniciarPomodoro()">
+              <ion-icon name="play-outline" slot="start"></ion-icon>
+              Iniciar sesión
+            </ion-button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="estado === 'corriendo'">
+          <div class="contador">
+            <ion-icon name="time-outline"></ion-icon>
+            <h1>{{ tiempoRestanteFormateado }}</h1>
+          </div>
+
+          <ion-text color="medium">
+            <p>Mantén el enfoque hasta el final para ganar XP!! :3</p>
+          </ion-text>
+
+          <div class="barra-progreso">
+            <div class="barra-fondo">
+              <div class="barra-relleno" [style.width.%]="progreso"></div>
+            </div>
+          </div>
+
+          <div class="acciones-temporizador">
+            <ion-button expand="block" color="danger" shape="round" (click)="cancelarPomodoro()">
+              <ion-icon name="stop-outline" slot="start"></ion-icon>
+              Cancelar
+            </ion-button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="estado === 'finalizado'">
+          <div class="finalizado">
+            <ion-text>
+              <h2>¡Sesión completada! 🎉</h2>
+              <p>Duración: {{ minutosSeleccionados }} minutos</p>
+              <p *ngIf="xpGanado !== null">
+                XP ganado: <b>{{ xpGanado }}</b>
+              </p>
+            </ion-text>
+          </div>
+
+          <div class="boton-grande">
+            <ion-button expand="block" shape="round" (click)="estado = 'configuracion'">
+              Empezar otra sesión
+            </ion-button>
+          </div>
+        </ng-container>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="resumenXP" class="card-resumen">
+      <ion-card-header>
+        <ion-card-title>Tu progreso</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-label>
+            <p>Total XP</p>
+            <h2>{{ resumenXP.total_xp }}</h2>
+          </ion-label>
+          <ion-icon name="sparkles-outline" slot="end"></ion-icon>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="ultimosEventos.length > 0" class="card-historial">
+      <ion-card-header>
+        <ion-card-title>Últimas sesiones</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let e of ultimosEventos">
+            <ion-icon name="time-outline" slot="start"></ion-icon>
+            <ion-label>
+              <p>{{ e.ocurrido_en | date:'short' }}</p>
+              <p>XP: {{ e.cantidad }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

@@ -1,0 +1,8 @@
+.tarea-wrapper {
+  padding: 16px;
+}
+
+ion-item.invalid {
+  --highlight-background: var(--ion-color-danger);
+  --border-color: var(--ion-color-danger);
+}

@@ -1,0 +1,131 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Calendario</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/inicio"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="calendario-contenedor">
+    <div class="encabezado-mes">
+      <ion-button fill="clear" (click)="cambiarMes(-1)">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+
+      <ion-text>
+        <h2>{{ nombreMesActual | titlecase }}</h2>
+      </ion-text>
+
+      <div class="acciones-mes">
+        <ion-button fill="clear" size="small" (click)="irAHoy()">
+          Hoy
+        </ion-button>
+
+        <ion-button fill="clear" (click)="cambiarMes(1)">
+          <ion-icon name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
+    <div class="cargando" *ngIf="cargando">
+      <ion-spinner></ion-spinner>
+      <ion-text color="medium">
+        <p>Cargando calendario...</p>
+      </ion-text>
+    </div>
+
+    <ion-text color="medium" *ngIf="errorRol && !cargando">
+      <p class="ion-padding">
+        Solo usuarios con rol <b>ESTUDIANTE</b> pueden ver este calendario.
+      </p>
+    </ion-text>
+
+    <!-- Calendario -->
+    <div *ngIf="!cargando && !errorRol">
+      
+      <ion-grid class="semana-encabezado">
+        <ion-row>
+          <ion-col class="dia-semana">D</ion-col>
+          <ion-col class="dia-semana">L</ion-col>
+          <ion-col class="dia-semana">M</ion-col>
+          <ion-col class="dia-semana">M</ion-col>
+          <ion-col class="dia-semana">J</ion-col>
+          <ion-col class="dia-semana">V</ion-col>
+          <ion-col class="dia-semana">S</ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <!-- Semanas -->
+      <ion-grid class="mes-grid">
+        <ion-row *ngFor="let semana of semanasCalendario">
+          <ion-col
+            *ngFor="let dia of semana"
+            class="dia-celda"
+            [class.vacio]="!dia.iso"
+            [class.hoy]="dia.esHoy"
+            [class.seleccionado]="esDiaSeleccionado(dia)"
+            (click)="seleccionarDia(dia)"
+          >
+            <ng-container *ngIf="dia.iso">
+              <div class="dia-numero">{{ dia.numero }}</div>
+              <div class="dia-marcadores">
+                <span
+                  class="marcador tareas"
+                  *ngIf="dia.tareas.length > 0"
+                >
+                  {{ dia.tareas.length }}
+                </span>
+                <span
+                  class="marcador recompensas"
+                  *ngIf="dia.recompensas.length > 0"
+                >
+                  {{ dia.recompensas.length }}
+                </span>
+              </div>
+            </ng-container>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <!-- Detalle día seleccionado -->
+      <div class="detalle-dia" *ngIf="fechaSeleccionadaIso">
+        <ion-text>
+          <h3>Eventos del {{ fechaSeleccionadaIso | date:'fullDate' }}</h3>
+        </ion-text>
+
+        <ion-text color="medium"
+                  *ngIf="tareasDiaSeleccionado.length === 0 && recompensasDiaSeleccionado.length === 0">
+          <p>Sin tareas ni recompensas en esta fecha.</p>
+        </ion-text>
+
+        <ion-list *ngIf="tareasDiaSeleccionado.length > 0">
+          <ion-item
+            lines="inset"
+            *ngFor="let t of tareasDiaSeleccionado"
+            (click)="abrirTarea(t); $event.stopPropagation()"
+          >
+            <ion-icon name="checkbox-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h4>{{ t.titulo }}</h4>
+              <p *ngIf="t.descripcion">{{ t.descripcion }}</p>
+              <p>Estado: {{ t.estado }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+        <ion-list *ngIf="recompensasDiaSeleccionado.length > 0">
+          <ion-item lines="inset" *ngFor="let r of recompensasDiaSeleccionado">
+            <ion-icon name="trophy-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h4>{{ r.etiqueta }}</h4>
+              <p>Tipo: {{ r.tipo_recompensa }} · Cantidad: {{ r.cantidad }}</p>
+              <p>Estado: {{ r.estado_recompensa }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
+    </div>
+  </div>
+</ion-content>

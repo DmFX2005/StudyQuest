@@ -1,0 +1,25 @@
+.estudiantes-aula-contenedor {
+  padding: 16px;
+}
+
+.avatar-est {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-est ion-icon {
+  position: absolute;
+  opacity: 0.18;
+  font-size: 2.2rem;
+}
+
+.avatar-iniciales {
+  position: relative;
+  font-weight: 600;
+  font-size: 1rem;
+}

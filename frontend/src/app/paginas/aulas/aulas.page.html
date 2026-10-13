@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Mis aulas</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/inicio"></ion-back-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="fun_addAula()">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="aulas-contenedor">
+    <ion-text color="medium" *ngIf="cargando">
+      <p>Cargando aulas...</p>
+    </ion-text>
+
+    <ion-text color="medium" *ngIf="!cargando && aulas.length === 0">
+      <p>No tienes aulas registradas todavía.</p>
+      <ion-button expand="block" shape="round" (click)="fun_addAula()">
+        Crear mi primera aula
+      </ion-button>
+    </ion-text>
+
+    <ion-card *ngFor="let a of aulas">
+      <ion-card-header>
+        <ion-card-title>{{ a.nombre }}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-icon name="time-outline" slot="start"></ion-icon>
+          <ion-label>
+            <p>Creada: {{ a.creado_en | date:'shortDate' }}</p>
+          </ion-label>
+        </ion-item>
+
+        <div class="acciones-aula">
+          <ion-button expand="block" size="small" shape="round" (click)="fun_editarAula(a)">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            Editar
+          </ion-button>
+
+          <ion-button expand="block" size="small" shape="round" color="primary" (click)="fun_verEstudiantes(a)">
+            <ion-icon name="people-outline" slot="start"></ion-icon>
+            Ver Estudiantes
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

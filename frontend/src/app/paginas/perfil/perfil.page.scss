@@ -1,0 +1,54 @@
+.perfil-contenedor {
+  padding: 16px;
+}
+
+.cabecera-perfil {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-perfil {
+  width: 64px;
+  height: 64px;
+}
+
+.avatar-fondo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-fondo ion-icon {
+  position: absolute;
+  opacity: 0.15;
+  font-size: 3rem;
+}
+
+.avatar-iniciales {
+  position: relative;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.info-principal ion-card-title {
+  margin-bottom: 4px;
+}
+
+.chips-rol {
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.acciones-perfil {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

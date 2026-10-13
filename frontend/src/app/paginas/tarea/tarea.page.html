@@ -1,0 +1,94 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
+    <ion-title>{{ id === 0 ? 'Nueva tarea' : 'Editar tarea' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen class="tarea-content">
+  <div class="tarea-wrapper">
+    <ion-card class="tarea-card">
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">{{ titulo }}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="tareaForm" (ngSubmit)="registrarTarea()">
+          
+          <ion-label><b>Título:</b></ion-label>
+          <ion-item lines="none" [class.invalid]="isInvalid('titulo')">
+            <ion-input
+              formControlName="titulo"
+              placeholder="Ej: Estudiar para el examen de mates"
+            ></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="isInvalid('titulo')">
+            {{ getErrorMessage('titulo') }}
+          </ion-text>
+
+          <ion-label><b>Descripción:</b></ion-label>
+          <ion-item lines="none">
+            <ion-input
+              formControlName="descripcion"
+              placeholder="Detalles de la tarea (opcional)"
+            ></ion-input>
+          </ion-item>
+
+          <ion-label><b>Prioridad:</b></ion-label>
+          <ion-item lines="none" [class.invalid]="isInvalid('prioridad')">
+            <ion-select
+              formControlName="prioridad"
+              interface="popover"
+              placeholder="Selecciona prioridad"
+            >
+              <ion-select-option value="BAJA">Baja</ion-select-option>
+              <ion-select-option value="MEDIA">Media</ion-select-option>
+              <ion-select-option value="ALTA">Alta</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-text color="danger" *ngIf="isInvalid('prioridad')">
+            {{ getErrorMessage('prioridad') }}
+          </ion-text>
+
+          <ion-label><b>Estado:</b></ion-label>
+          <ion-item lines="none" [class.invalid]="isInvalid('estado')">
+            <ion-select
+              formControlName="estado"
+              interface="popover"
+              placeholder="¿En que estado esta?"
+            >
+              <ion-select-option value="PENDIENTE">Pendiente</ion-select-option>
+              <ion-select-option value="EN_PROGRESO">En Progreso</ion-select-option>
+              <ion-select-option value="COMPLETADA">Completada</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-text color="danger" *ngIf="isInvalid('estado')">
+            {{ getErrorMessage('estado') }}
+          </ion-text>
+
+          <ion-label><b>Vence en:</b></ion-label>
+          <ion-item lines="none">
+            
+            <ion-input
+              formControlName="vence_en"
+              type="datetime-local"
+            ></ion-input>
+          </ion-item>
+
+          <ion-button expand="block" shape="round" type="submit">
+            {{ id === 0 ? 'Crear tarea' : 'Actualizar tarea' }}
+          </ion-button>
+
+          <ion-button
+            expand="block"
+            color="medium"
+            shape="round"
+            type="button"
+            (click)="fun_cancelar()"
+          >
+            Cancelar
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

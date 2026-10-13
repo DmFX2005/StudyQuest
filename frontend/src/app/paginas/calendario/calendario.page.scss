@@ -1,0 +1,111 @@
+.calendario-contenedor {
+  padding: 16px;
+}
+
+.encabezado-mes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    text-transform: capitalize;
+  }
+}
+
+.cargando {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+}
+
+.semana-encabezado {
+  margin-bottom: 4px;
+}
+
+.dia-semana {
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.mes-grid {
+  .dia-celda {
+    text-align: center;
+    height: 42px;
+    padding: 2px;
+    font-size: 0.85rem;
+  }
+
+  .dia-celda.vacio {
+    pointer-events: none;
+  }
+
+  .dia-numero {
+    font-size: 0.9rem;
+  }
+
+  .dia-marcadores {
+    margin-top: 2px;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .marcador {
+    min-width: 16px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    padding: 0 4px;
+    color: #fff;
+  }
+
+  .marcador.tareas {
+    background: #4caf50;
+  }
+
+  .marcador.recompensas {
+    background: #ff9800;
+  }
+
+  .dia-celda.hoy {
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+  }
+
+  .dia-celda.seleccionado {
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.16);
+  }
+}
+
+.detalle-dia {
+  margin-top: 16px;
+
+  h3 {
+    margin-bottom: 8px;
+    font-size: 1rem;
+  }
+}
+
+.encabezado-mes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    text-transform: capitalize;
+  }
+}
+
+.acciones-mes {
+  display: flex;
+  align-items: center;
+}

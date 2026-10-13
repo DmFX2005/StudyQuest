@@ -1,0 +1,67 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>{{ aulaInfo?.nombre || 'Aula' }}</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/aulas"></ion-back-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="fun_agregarEstudiante()">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="estudiantes-aula-contenedor">
+    <ion-text color="medium" *ngIf="cargando">
+      <p>Cargando estudiantes...</p>
+    </ion-text>
+
+    <ion-text color="medium" *ngIf="!cargando && estudiantes.length === 0">
+      <p>Este aula aún no tiene estudiantes.</p>
+      <ion-button expand="block" shape="round" (click)="fun_agregarEstudiante()">
+        Agregar estudiante
+      </ion-button>
+    </ion-text>
+
+    <ion-card *ngIf="!cargando && estudiantes.length > 0">
+      <ion-card-header>
+        <ion-card-title>Estudiantes del aula</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item lines="full" *ngFor="let e of estudiantes">
+          <ion-avatar slot="start">
+            <div class="avatar-est">
+              <ion-icon name="person-outline"></ion-icon>
+              <span class="avatar-iniciales">{{ iniciales(e) }}</span>
+            </div>
+          </ion-avatar>
+
+          <ion-label>
+            <h2>{{ nombreCompleto(e) }}</h2>
+            <p>{{ e.email }}</p>
+            <p *ngIf="e.grado_grupo">Grado/Grupo: {{ e.grado_grupo }}</p>
+          </ion-label>
+
+          <ion-button
+            size="small"
+            color="danger"
+            shape="round"
+            (click)="fun_eliminarEstudiante(e)"
+          >
+            <ion-icon name="trash-outline" slot="start"></ion-icon>
+            Quitar
+          </ion-button>
+        </ion-item>
+
+        <ion-button expand="block" shape="round" (click)="fun_agregarEstudiante()">
+          <ion-icon name="add-outline" slot="start"></ion-icon>
+          Agregar estudiante
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

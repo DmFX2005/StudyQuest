@@ -1,0 +1,67 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Flashcards</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/inicio"></ion-back-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end" (click)="fun_addMazo()">
+      <ion-icon name="add-outline"></ion-icon>
+      Nuevo mazo
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="mazos-container">
+    <div class="cargando" *ngIf="cargando">
+      <ion-spinner></ion-spinner>
+      <ion-text color="medium">
+        <p>Cargando mazos...</p>
+      </ion-text>
+    </div>
+
+    <ion-text color="medium" *ngIf="!cargando && mazos.length === 0">
+      <p class="ion-padding">
+        No tienes mazos aún. Crea uno desde el web o agrega luego la opción aquí para crearlo.
+      </p>
+    </ion-text>
+
+    @for (m of mazos; track m.mazo_id) {
+      <ion-card class="mazo-card">
+        <ion-card-header>
+          <ion-card-title>{{ m.titulo }}</ion-card-title>
+          <ion-card-subtitle>Alcance: {{ m.alcance }}</ion-card-subtitle>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-row>
+            <ion-col size="8">
+              <ion-button
+                expand="block"
+                shape="round"
+                color="primary"
+                (click)="fun_estudiarMazo(m)"
+              >
+                <ion-icon name="play-outline" slot="start"></ion-icon>
+                Estudiar
+              </ion-button>
+            </ion-col>
+            <ion-col size="4">
+              <ion-button
+                expand="block"
+                shape="round"
+                color="danger"
+                (click)="fun_eliminarMazo(m.mazo_id)"
+              >
+                <ion-icon name="trash-outline" slot="start"></ion-icon>
+                Borrar
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    }
+  </div>
+</ion-content>

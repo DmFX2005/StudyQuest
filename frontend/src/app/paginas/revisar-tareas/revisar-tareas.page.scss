@@ -1,0 +1,17 @@
+.revisar-tareas-contenedor {
+  padding: 16px;
+}
+
+.botones-acciones {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+ion-item {
+  --inner-padding-end: 0;
+}
+
+ion-card {
+  margin-bottom: 12px;
+}

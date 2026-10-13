@@ -1,0 +1,250 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <a href="/login">
+      <ion-title>StudyQuest</ion-title>
+    </a>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <div class="registro-wrapper">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-subtitle>Paso {{ step + 1 }} de {{ totalSteps }}</ion-card-subtitle>
+
+        <ion-card-title *ngIf="step === 0">Bienvenido a StudyQuest</ion-card-title>
+        <ion-card-title *ngIf="step === 1">Crea tu cuenta</ion-card-title>
+        <ion-card-title *ngIf="step === 2">Elige tu rol</ion-card-title>
+        <ion-card-title *ngIf="step === 3">Cuéntanos más de ti</ion-card-title>
+        <ion-card-title *ngIf="step === 4">Tu mundo académico</ion-card-title>
+      </ion-card-header>
+
+      <ion-progress-bar [value]="porcentajeProgreso"></ion-progress-bar>
+
+      <ion-card-content>
+        <form [formGroup]="registroForm">
+          <ng-container *ngIf="step === 0">
+            <p>
+              Vamos a crear tu cuenta en unos pocos pasos. Te haremos algunas
+              preguntas para personalizar tu experiencia de estudio, clases y organización.
+            </p>
+          </ng-container>
+
+          <ng-container *ngIf="step === 1">
+            
+            <ion-label><b>Correo electrónico:</b></ion-label>
+            <ion-item lines="none" [class.invalid]="isInvalid('email')">
+              <ion-input
+                formControlName="email"
+                type="email"
+                placeholder="correo@ejemplo.com"
+              ></ion-input>
+            </ion-item>
+            <ion-text color="danger" *ngIf="isInvalid('email')">
+              {{ getErrorMessage('email') }}
+            </ion-text>
+
+            <ion-label><b>Contraseña:</b></ion-label>
+            <ion-item lines="none" [class.invalid]="isInvalid('password')">
+              <ion-input
+                formControlName="password"
+                type="password"
+                placeholder="Mínimo 6 caracteres"
+              ></ion-input>
+            </ion-item>
+            <ion-text color="danger" *ngIf="isInvalid('password')">
+              {{ getErrorMessage('password') }}
+            </ion-text>
+
+            <ion-label><b>Confirmar contraseña:</b></ion-label>
+            <ion-item lines="none" [class.invalid]="isInvalid('confirmPassword')">
+              <ion-input
+                formControlName="confirmPassword"
+                type="password"
+                placeholder="Repite tu contraseña"
+              ></ion-input>
+            </ion-item>
+            <ion-text color="danger" *ngIf="isInvalid('confirmPassword')">
+              {{ getErrorMessage('confirmPassword') }}
+            </ion-text>
+          </ng-container>
+
+          <ng-container *ngIf="step === 2">
+            <ion-label><b>¿Qué papel tienes en esta aventura?</b></ion-label>
+            <div class="roles-container">
+              <ion-chip
+                *ngFor="let r of roles"
+                (click)="seleccionarRol(r.codigo)"
+                [outline]="rolSeleccionado !== r.codigo"
+                [color]="rolSeleccionado === r.codigo ? 'primary' : 'medium'"
+              >
+                <ion-icon [name]="r.icon" *ngIf="r.icon"></ion-icon>
+                <ion-label>{{ r.label }}</ion-label>
+              </ion-chip>
+            </div>
+
+            <ion-text color="danger" *ngIf="isInvalid('rol')">
+              {{ getErrorMessage('rol') || 'Debes seleccionar un rol.' }}
+            </ion-text>
+
+            <ion-text color="medium" *ngIf="rolSeleccionado === 'ESTUDIANTE'">
+              <p>Organiza tus tareas, cursos y hábitos de estudio.</p>
+            </ion-text>
+            <ion-text color="medium" *ngIf="rolSeleccionado === 'PROFESOR'">
+              <p>Gestiona tus aulas, tareas y comunicación con estudiantes.</p>
+            </ion-text>
+            <ion-text color="medium" *ngIf="rolSeleccionado === 'PADRE'">
+              <p>Sigue el progreso académico y organización de tus hijos.</p>
+            </ion-text>
+          </ng-container>
+
+          <ng-container *ngIf="step === 3">
+            
+            <ion-label><b>Nombre:</b></ion-label>
+            <ion-item lines="none" [class.invalid]="isInvalid('nombre')">
+              <ion-input
+                formControlName="nombre"
+                placeholder="Tu nombre"
+              ></ion-input>
+            </ion-item>
+            <ion-text color="danger" *ngIf="isInvalid('nombre')">
+              {{ getErrorMessage('nombre') }} <br>
+            </ion-text>
+
+            <ion-label><b>Apellido:</b></ion-label>
+            <ion-item lines="none" [class.invalid]="isInvalid('apellido')">
+              <ion-input
+                formControlName="apellido"
+                placeholder="Tu apellido"
+              ></ion-input>
+            </ion-item>
+            <ion-text color="danger" *ngIf="isInvalid('apellido')">
+              {{ getErrorMessage('apellido') }} <br>
+            </ion-text>
+
+            <ion-label><b>Fecha de nacimiento:</b></ion-label>
+            <ion-item lines="none">
+              <ion-input
+                formControlName="fecha_nacimiento"
+                type="date"
+              ></ion-input>
+            </ion-item>
+
+            <ion-label><b>Teléfono de contacto (Opcional):</b></ion-label>
+            <ion-item lines="none">
+              <ion-input
+                formControlName="telefono_contacto"
+                type="tel"
+                placeholder="0999999999"
+              ></ion-input>
+            </ion-item>
+          </ng-container>
+
+          <ng-container *ngIf="step === 4">
+            
+            <ng-container *ngIf="rolSeleccionado === 'ESTUDIANTE'">
+              <ion-label><b>Nivel educativo:</b></ion-label>
+              <ion-item lines="none">
+                <ion-input
+                  formControlName="nivel_educativo"
+                  placeholder="Primaria, Secundaria, Universidad..."
+                ></ion-input>
+              </ion-item>
+
+              <ion-label><b>Institución:</b></ion-label>
+              <ion-item lines="none">
+                <ion-input
+                  formControlName="institucion"
+                  placeholder="Nombre de tu institución"
+                ></ion-input>
+              </ion-item>
+
+              <ion-label><b>Grado / Curso:</b></ion-label>
+              <ion-item lines="none">
+                <ion-input
+                  formControlName="grado_grupo"
+                  placeholder="Ej: 2do BGU 'A'"
+                ></ion-input>
+              </ion-item>
+            </ng-container>
+
+            <ng-container *ngIf="rolSeleccionado === 'PROFESOR'">
+              <ion-label><b>Institución:</b></ion-label>
+              <ion-item lines="none">
+                <ion-input
+                  formControlName="institucion"
+                  placeholder="Nombre de la institución donde enseñas"
+                ></ion-input>
+              </ion-item>
+
+              <ion-label><b>Área docente:</b></ion-label>
+              <ion-item lines="none">
+                <ion-input
+                  formControlName="area_docente"
+                  placeholder="Ej: Matemáticas, Lengua..."
+                ></ion-input>
+              </ion-item>
+
+              <ion-label><b>Grados / grupos:</b></ion-label>
+              <ion-item lines="none">
+                <ion-input
+                  formControlName="grado_grupo"
+                  placeholder="Ej: 8vo, 9no, 10mo"
+                ></ion-input>
+              </ion-item>
+
+              <ion-label><b>Nivel educativo:</b></ion-label>
+              <ion-item lines="none">
+                <ion-input
+                  formControlName="nivel_educativo"
+                  placeholder="Primaria, Secundaria..."
+                ></ion-input>
+              </ion-item>
+            </ng-container>
+
+            <ng-container *ngIf="rolSeleccionado === 'PADRE'">
+              <ion-label><b>Institución del estudiante:</b></ion-label>
+              <ion-item lines="none">
+                <ion-input
+                  formControlName="institucion"
+                  placeholder="Colegio / escuela del estudiante"
+                ></ion-input>
+              </ion-item>
+
+              <ion-label><b>Nivel educativo del estudiante:</b></ion-label>
+              <ion-item lines="none">
+                <ion-input
+                  formControlName="nivel_educativo"
+                  placeholder="Primaria, Secundaria..."
+                ></ion-input>
+              </ion-item>
+            </ng-container>
+
+            <div class="resumen">
+              <h3>Resumen rápido</h3>
+              <p><strong>Email:</strong> {{ registroForm.get('email')?.value }}</p>
+              <p><strong>Rol:</strong> {{ rolSeleccionado }}</p>
+            </div>
+
+            <ion-button expand="block" shape="round" type="button" (click)="registrar()">
+              Confirmar y crear cuenta
+            </ion-button>
+          </ng-container>
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="acciones-pasos">
+      <ion-button fill="clear" (click)="pasoAnterior()" [disabled]="step === 0">
+        Atrás
+      </ion-button>
+
+      <ion-button
+        *ngIf="step < totalSteps - 1"
+        (click)="siguientePaso()"
+      >
+        Siguiente
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

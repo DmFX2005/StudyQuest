@@ -1,0 +1,7 @@
+{
+  "name": "StudyQuest",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

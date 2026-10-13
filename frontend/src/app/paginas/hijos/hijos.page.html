@@ -1,0 +1,57 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Mis hijos</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/inicio"></ion-back-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="fun_addHijo()">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="hijos-contenedor">
+    <ion-text color="medium" *ngIf="cargando">
+      <p>Cargando listado de hijos...</p>
+    </ion-text>
+
+    <ion-text color="medium" *ngIf="!cargando && hijos.length === 0">
+      <p>No tienes hijos vinculados aún.</p>
+      <ion-button expand="block" shape="round" (click)="fun_addHijo()">
+        Vincular hijo
+      </ion-button>
+    </ion-text>
+
+    <ion-card *ngIf="!cargando && hijos.length > 0">
+      <ion-card-header>
+        <ion-card-title>Hijos vinculados</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item lines="full" *ngFor="let h of hijos">
+          <ion-avatar slot="start">
+            <div class="avatar-hijo">
+              <ion-icon name="person-outline"></ion-icon>
+              <span class="avatar-iniciales">{{ inicialesHijo(h) }}</span>
+            </div>
+          </ion-avatar>
+
+          <ion-label>
+            <h2>{{ nombreHijo(h) }}</h2>
+            <p>{{ h.email }}</p>
+          </ion-label>
+
+        </ion-item>
+
+        <ion-button expand="block" shape="round" (click)="fun_addHijo()" class="btn-agregar">
+          <ion-icon name="add-outline" slot="start"></ion-icon>
+          Agregar otro hijo
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

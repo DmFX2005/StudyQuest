@@ -1,0 +1,78 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
+    <ion-title>{{ titulo }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen class="datos-perfil-contenido">
+  <div class="datos-perfil-wrapper">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">Datos personales</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()">
+          
+          <ion-label><b>Nombre:</b></ion-label>
+          <ion-item lines="none" [class.invalid]="esInvalido('nombre')">
+            <ion-input formControlName="nombre" placeholder="Nombre"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="esInvalido('nombre')">
+            {{ mensajeError('nombre') }}
+          </ion-text>
+
+          <ion-label><b>Apellido:</b></ion-label>
+          <ion-item lines="none" [class.invalid]="esInvalido('apellido')">
+            <ion-input formControlName="apellido" placeholder="Apellido"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="esInvalido('apellido')">
+            {{ mensajeError('apellido') }}
+          </ion-text>
+
+          <ion-label><b>Fecha de nacimiento:</b></ion-label>
+          <ion-item lines="none">
+            <ion-datetime
+              presentation="date"
+              formControlName="fecha_nacimiento"
+              placeholder="Selecciona fecha"
+            ></ion-datetime>
+          </ion-item>
+
+          <ion-label><b>Nivel educativo:</b></ion-label>
+          <ion-item lines="none">
+            <ion-input formControlName="nivel_educativo" placeholder="Ej: Bachillerato"></ion-input>
+          </ion-item>
+
+          <ion-label><b>Institución:</b></ion-label>
+          <ion-item lines="none">
+            <ion-input formControlName="institucion" placeholder="Institución"></ion-input>
+          </ion-item>
+
+          <ion-label><b>Grado / Grupo:</b></ion-label>
+          <ion-item lines="none">
+            <ion-input formControlName="grado_grupo" placeholder="Ej: 2do B"></ion-input>
+          </ion-item>
+
+          <ion-label><b>Área docente:</b></ion-label>
+          <ion-item lines="none">
+            <ion-input formControlName="area_docente" placeholder="Solo para docentes"></ion-input>
+          </ion-item>
+
+          <ion-label><b>Teléfono:</b></ion-label>
+          <ion-item lines="none">
+            <ion-input formControlName="telefono_contacto" type="tel" placeholder="0999999999"></ion-input>
+          </ion-item>
+
+          <ion-button expand="block" shape="round" type="submit">
+            Guardar cambios
+          </ion-button>
+
+          <ion-button expand="block" color="medium" shape="round" type="button" (click)="cancelar()">
+            Cancelar
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

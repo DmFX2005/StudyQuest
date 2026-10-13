@@ -1,0 +1,125 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Mis tareas</ion-title>
+    <a href="/inicio">
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/inicio"></ion-back-button>
+      </ion-buttons>
+    </a>
+    <ion-buttons slot="end" (click)="fun_addTarea()">
+      <ion-icon name="add-outline"></ion-icon>
+      Agregar
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-segment [value]="filtroEstado" (ionChange)="cambiarFiltro($event)">
+      <ion-segment-button value="PENDIENTE">
+        Pendientes
+      </ion-segment-button>
+      <ion-segment-button value="EN_PROGRESO">
+        En progreso
+      </ion-segment-button>
+      <ion-segment-button value="COMPLETADA">
+        Completadas
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [value]="filtroEstado" (ionChange)="cambiarFiltro($event)">
+      <ion-segment-button value="RECHAZADA">
+        Rechazadas
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="tareas-container">
+    <div class="cargando" *ngIf="cargando">
+      <ion-spinner></ion-spinner>
+      <ion-text color="medium">
+        <p>Cargando tareas...</p>
+      </ion-text>
+    </div>
+
+    <ion-text color="medium" *ngIf="!cargando && tareas.length === 0">
+      <p class="ion-padding">
+        No hay tareas en este estado. Puedes agregar una nueva con el botón
+        <b>Agregar</b>.
+      </p>
+    </ion-text>
+
+    @for (tarea of tareas; track tarea.tarea_id) {
+      <ion-card class="tarea-card">
+        <ion-card-header>
+          <ion-card-title>{{ tarea.titulo }}</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-item lines="none">
+            <ion-label>
+              <p *ngIf="tarea.descripcion">{{ tarea.descripcion }}</p>
+              <p *ngIf="tarea.vence_en">
+                Vence: {{ tarea.vence_en | date:'short' }}
+              </p>
+              <p>
+                Prioridad: {{ tarea.prioridad || 'MEDIA' }}
+              </p>
+              <p>
+                Estado: {{ tarea.estado }}
+              </p>
+              <p>
+                Por {{ tarea.origen_tarea }}
+              </p>
+              <p *ngIf="tarea.retroalimentacion">
+                Retroalimentacion: {{ tarea.retroalimentacion }}
+              </p>
+              
+            </ion-label>
+          </ion-item>
+        </ion-card-content>
+
+        <ion-row>
+          <ion-col size="4">
+            <ion-button
+              expand="block"
+              size="small"
+              color="success"
+              shape="round"
+              (click)="fun_completarTarea(tarea)"
+              [disabled]="tarea.estado === 'COMPLETADA'"
+            >
+              <ion-icon name="checkmark-done-outline" slot="start"></ion-icon>
+              Completar
+            </ion-button>
+          </ion-col>
+          <ion-col size="4">
+            <ion-button
+              expand="block"
+              size="small"
+              color="medium"
+              shape="round"
+              (click)="fun_editarTarea(tarea)"
+            >
+              <ion-icon name="create-outline" slot="start"></ion-icon>
+              Editar
+            </ion-button>
+          </ion-col>
+          <ion-col size="4">
+            <ion-button
+              expand="block"
+              size="small"
+              color="danger"
+              shape="round"
+              (click)="fun_eliminarTarea(tarea.tarea_id)"
+            >
+              <ion-icon name="trash-outline" slot="start"></ion-icon>
+              Eliminar
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+    }
+  </div>
+</ion-content>

@@ -1,0 +1,87 @@
+.panelOpcion{
+    text-align: center;
+}
+
+.inicio-wrapper {
+  padding: 16px;
+}
+
+.greeting-card {
+  margin-bottom: 12px;
+}
+
+.mission-card {
+  margin-bottom: 12px;
+}
+
+.tareas-card {
+  margin-bottom: 16px;
+}
+
+.chips-resumen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.chip {
+  background: rgba(91, 95, 236, 0.08);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+}
+
+.chip-label {
+  opacity: 0.7;
+  margin-right: 4px;
+}
+
+.chip-value {
+  font-weight: 600;
+}
+
+.menu-seccion {
+  margin-top: 8px;
+}
+
+.menu-titulo {
+  margin: 8px 0;
+  font-size: 1rem;
+}
+
+.menu-card {
+  text-align: center;
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-etiqueta {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.cargando {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.resumen-tareas {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+
+  .resumen-label {
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
+
+  .resumen-num {
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+}

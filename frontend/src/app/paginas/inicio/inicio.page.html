@@ -1,0 +1,179 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Inicio</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="irPerfil()">
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <div class="inicio-wrapper">
+    
+    <ion-card class="greeting-card">
+      <ion-card-header>
+        <ion-card-title>Hola, {{ nombreUsuario }} 👋</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-text *ngIf="rolPrincipal === 'ESTUDIANTE'" color="medium">
+          <p>
+            Bienvenido a tu <b>StudyQuest!</b>. Organiza tu día como si fuera una misión
+            y completa tus objetivos.
+          </p>
+        </ion-text>
+        <ion-text *ngIf="rolPrincipal === 'PADRE'" color="medium">
+          <p>
+            Bienvenido a tu <b>StudyQuest!</b>. Aqui podra ver el progreso de sus hijos y llevar un control de sus tareas.
+          </p>
+        </ion-text>
+        <ion-text *ngIf="rolPrincipal === 'PROFESOR'" color="medium">
+          <p>
+            Bienvenido a tu <b>StudyQuest!</b>. <br>  Aqui podra tener una mejor organizacion de sus aulas, las tareas que envia y el listado de sus estudiantes.
+          </p>
+        </ion-text>
+
+        <div class="chips-resumen">
+          <div class="chip">
+            <span class="chip-label">Rol: </span>
+            <span class="chip-value">{{ rolPrincipal || 'Sin rol' }}</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="mission-card">
+      <ion-card-header>
+        <ion-card-title>Misión del día</ion-card-title>
+      </ion-card-header>
+      <ion-card-content *ngIf="rolPrincipal === 'ESTUDIANTE'">
+        <ion-text color="medium">
+          <p>
+            Revisa tus tareas, eventos del calendario o cursos.
+            Completar tus actividades te hará ganar recompensas!! 
+          </p>
+        </ion-text>
+      </ion-card-content>
+      <ion-card-content *ngIf="rolPrincipal === 'PADRE'">
+        <ion-text color="medium">
+          <p>
+            Revisar las tareas de su hijo, recuerde que su educación tambien depende de usted.
+            <br>Asigne recompensas y motive a su hijo!! 
+          </p>
+        </ion-text>
+      </ion-card-content>
+      <ion-card-content *ngIf="rolPrincipal === 'PROFESOR'">
+        <ion-text color="medium">
+          <p>
+            Organice sus aulas, revise las tareas entregadas y asigne tareas a sus estudiantes!
+          </p>
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="rolPrincipal === 'ESTUDIANTE'" class="tareas-card">
+      <ion-card-header>
+        <ion-card-title>Tus tareas</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div *ngIf="cargandoTareas" class="cargando">
+          <ion-spinner></ion-spinner>
+          <ion-text color="medium">
+            <p>Cargando tus tareas...</p>
+          </ion-text>
+        </div>
+
+        <ng-container *ngIf="!cargandoTareas">
+          <div class="resumen-tareas">
+            <div>
+              <p class="resumen-label">Pendientes</p>
+              <p class="resumen-num">{{ tareasPendientes.length }}</p>
+            </div>
+            <div>
+              <p class="resumen-label">Vencen hoy</p>
+              <p class="resumen-num">{{ tareasHoy.length }}</p>
+            </div>
+          </div>
+
+          <ion-text color="medium" *ngIf="tareasPendientes.length === 0">
+            <p>No tienes tareas pendientes. ¡Buen trabajo! :D</p>
+          </ion-text>
+
+          <ion-list *ngIf="tareasPendientes.length > 0">
+            <ion-item
+              button
+              detail="false"
+              *ngFor="let t of tareasPendientes | slice:0:3"
+              (click)="irTareas()"
+            >
+              <ion-label>
+                <h3>{{ t.titulo }}</h3>
+                <p *ngIf="t.vence_en">
+                  Vence: {{ t.vence_en | date:'shortDate' }}
+                </p>
+                <p *ngIf="!t.vence_en">
+                  Sin fecha límite
+                </p>
+              </ion-label>
+              <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+            </ion-item>
+          </ion-list>
+
+          <ion-button
+            expand="block"
+            fill="outline"
+            size="small"
+            (click)="irTareas()"
+            *ngIf="tareasPendientes.length > 3"
+          >
+            Ver todas mis tareas
+          </ion-button>
+        </ng-container>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="menu-seccion">
+      <h2 class="panelOpcion">Panel de opciones</h2>
+
+      <div class="cargando" *ngIf="cargandoMenu">
+        <ion-spinner></ion-spinner>
+        <ion-text color="medium">
+          <p>Cargando tu menú...</p>
+        </ion-text>
+      </div>
+
+      <div *ngIf="!cargandoMenu && menus.length === 0">
+        <ion-text color="medium">
+          <p>No hay opciones de menú configuradas.</p>
+        </ion-text>
+      </div>
+
+      <div class="panelOpcion" *ngFor="let m of menus">
+        <h3 class="menu-titulo">{{ m.nombre }}</h3>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col
+              size="6"
+              *ngFor="let op of m.opciones"
+              (click)="abrirRuta(op.ruta)"
+            >
+              <ion-card button class="menu-card">
+                <ion-card-content>
+                  <div class="menu-etiqueta">
+                    {{ op.etiqueta }}
+                  </div>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </div>
+  </div>
+</ion-content>

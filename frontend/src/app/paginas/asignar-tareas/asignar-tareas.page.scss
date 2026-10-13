@@ -1,0 +1,13 @@
+.asignar-tarea-contenedor {
+  padding: 16px;
+}
+
+ion-item.invalid {
+  --border-color: var(--ion-color-danger);
+  --highlight-background: var(--ion-color-danger);
+}
+
+.seleccionado-box {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
